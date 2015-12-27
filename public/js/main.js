@@ -19066,6 +19066,8 @@ var List = require('./List.jsx');
 var ListManager = React.createClass({
   displayName: 'ListManager',
 
+  //Sets the initial configutaion for the List.
+  //returns an empty items array and an empty newItemText
   getInitialState: function () {
     return {
       items: [],
@@ -19073,14 +19075,19 @@ var ListManager = React.createClass({
     };
   },
   onChange: function (e) {
+    //Update the state property every time a keystroke is typed
     this.setState({
       newItemText: e.target.value
     });
   },
   handleSubmit: function (e) {
+    //Stop the button from getting clicks since we are using form onSubmit
     e.preventDefault();
+
+    //Add the new item to the list
     var currentItems = this.state.items;
 
+    //Update the main item list with the new list and clear newItemText
     currentItems.push(this.state.newItemText);
 
     this.setState({
@@ -19089,25 +19096,62 @@ var ListManager = React.createClass({
     });
   },
   render: function () {
+    //onChange is called with every keysyroke so we can store the most recent data entered
+    //value is what the user sees in the inut box - we point this to the newItemText so it updates on every item
+
+    var divStyle = {
+      marginTop: 20
+    };
+
+    var headingStyle = {};
+
+    var borderStyle = {};
+
+    //If the headingColor exists (is send from the main.jsx as an input ) change the headingStyle (in css that would be "background") to the passed in headingColor
+    if (this.props.headingColor) {
+      headingStyle.background = this.props.headingColor;
+      borderStyle.borderColor = this.props.headingColor;
+    };
+
     return React.createElement(
       'div',
-      null,
+      { style: divStyle, className: 'col-sm-4' },
       React.createElement(
-        'h3',
-        null,
-        this.props.title
-      ),
-      React.createElement(
-        'form',
-        { onSubmit: this.handleSubmit },
-        React.createElement('input', { onChange: this.onChange, value: this.props.newItemText }),
+        'div',
+        { style: borderStyle, className: 'panel panel-primary' },
         React.createElement(
-          'button',
-          null,
-          'Add'
-        )
-      ),
-      React.createElement(List, { items: this.state.items })
+          'div',
+          { style: $.extend({}, headingStyle, borderStyle), className: 'panel panel-heading' },
+          React.createElement(
+            'h3',
+            null,
+            this.props.title
+          )
+        ),
+        React.createElement(
+          'div',
+          { className: 'row panel-body' },
+          React.createElement(
+            'form',
+            { onSubmit: this.handleSubmit },
+            React.createElement(
+              'div',
+              { className: 'col-sm-9' },
+              React.createElement('input', { className: 'form-control', onChange: this.onChange, value: this.props.newItemText })
+            ),
+            React.createElement(
+              'div',
+              { className: 'col-sm-3' },
+              React.createElement(
+                'button',
+                { style: $.extend({}, headingStyle, borderStyle), className: 'btn btn-primary' },
+                'Add'
+              )
+            )
+          )
+        ),
+        React.createElement(List, { items: this.state.items })
+      )
     );
   }
 });
@@ -19120,5 +19164,7 @@ var ReactDOM = require('react-dom');
 var ListManager = require('./components/ListManager.jsx');
 
 ReactDOM.render(React.createElement(ListManager, { title: 'Ingredients' }), document.getElementById('ingredients'));
+ReactDOM.render(React.createElement(ListManager, { title: 'To Do', headingColor: '#FF6A6A' }), document.getElementById('todo'));
+ReactDOM.render(React.createElement(ListManager, { title: 'Wish List' }), document.getElementById('wishlist'));
 
 },{"./components/ListManager.jsx":161,"react":158,"react-dom":29}]},{},[162]);
